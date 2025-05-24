@@ -1,0 +1,4 @@
+api
+pkg*
+*.bk
+*.sh
