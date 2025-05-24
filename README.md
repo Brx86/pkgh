@@ -1,6 +1,8 @@
 # pkgh
 Search package history in arch and archlinuxcn
 
+![](/example.webp)
+
 ```bash
 ❯ pkgh -h
 Search package history in arch and archlinuxcn
