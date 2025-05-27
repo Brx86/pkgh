@@ -4,6 +4,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -12,7 +13,7 @@ import (
 
 const (
 	ARCHIVE_URL = "https://asia.archive.pkgbuild.com/packages/"
-	PATTERN     = `-([^-]+-[0-9.]+)-(any|x86_64).(pkg.tar.[0-9a-z]*)<\/a>\s*(.*\d)\s{1,}(\w*)`
+	PATTERN     = `-([^-]+-[0-9.]+)-(any|x86_64).(pkg.tar.[0-9a-z]*)<\/a>\s*(.*\d) {1,}(\w*)`
 )
 
 type pkgInfo struct {
@@ -39,11 +40,16 @@ func matchPkg(pkgName string) []pkgInfo {
 	for _, p := range historyData {
 		pTime, _ := time.Parse("02-Jan-2006 15:04", p[4])
 		fTime := pTime.Format("2006-01-02 15:04")
+		size := p[5]
+		sizen, err := strconv.Atoi(p[5])
+		if err == nil {
+			size = strconv.Itoa(sizen/1000) + "K"
+		}
 		result = append(result, pkgInfo{
 			ts:      pTime.Unix(),
 			fTime:   "\033[36m" + fTime + "\033[0m",
 			version: "\033[32m" + p[1] + "\033[0m",
-			size:    "\033[90m" + p[5] + "\033[0m",
+			size:    "\033[90m" + size + "\033[0m",
 		})
 	}
 	sort.Slice(result, func(i, j int) bool {
